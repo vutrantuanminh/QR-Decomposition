@@ -1,143 +1,107 @@
-# PHÂN RÃ QR VÀ GIẢI BÀI TOÁN BÌNH PHƯƠNG TỐI THIỂU
+# Phân Rã QR và Giải Bài Toán Bình Phương Tối Thiểu
 
-## 📋 Mô tả
+Chương trình Python giải hệ phương trình **Ax = b** bằng phương pháp phân rã QR với 4 thuật toán khác nhau.
 
-Chương trình Python giải hệ phương trình Ax = b bằng phương pháp phân rã QR với 4 thuật toán khác nhau:
-- **CGS** (Classical Gram-Schmidt)
-- **MGS** (Modified Gram-Schmidt)
-- **Householder** (Biến đổi Householder)
-- **Givens** (Phép quay Givens)
-
-## 🚀 Cài đặt
+## 🚀 Cài Đặt
 
 ### Yêu cầu:
 - Python 3.x
 - NumPy
 
-### Kiểm tra môi trường:
 ```bash
-python3 --version
-python3 -c "import numpy; print('NumPy OK')"
+pip install numpy
 ```
 
-## 📖 Cách sử dụng
+## 📖 Cách Sử Dụng
 
-### Cách 1: Chạy tất cả demo mẫu
+### 1️⃣ Demo Tương Tác - Nhập từ bàn phím (KHUYẾN NGHỊ)
+
 ```bash
-python3 QR.py
+python3 demo_interactive.py
 ```
 
-Chương trình sẽ chạy:
-- Demo ví dụ 3.4 từ báo cáo
-- Demo với ma trận ill-conditioned
-- Demo hồi quy tuyến tính
-- 2 ví dụ hệ phương trình tùy chỉnh
+**Các bước:**
+1. Chọn `1` để nhập hệ phương trình
+2. Nhập số hàng `m` và số cột `n`
+3. Nhập từng hàng của ma trận A (các số cách nhau bởi dấu **CÁCH**)
+4. Nhập vector b
+5. Xem kết quả
 
-### Cách 2: Giải hệ phương trình của bạn (ĐƠN GIẢN NHẤT)
+**Ví dụ nhập:**
+```
+Nhập số hàng (m): 3
+Nhập số cột (n): 2
+Hàng 1: 1 1
+Hàng 2: 1 2
+Hàng 3: 1 3
+Vector b: 1 2 2
+```
+
+### 2️⃣ Demo Đơn Giản - Sửa code
+
 ```bash
 python3 demo_custom.py
 ```
 
-**Để thay đổi hệ phương trình:**
-1. Mở file `demo_custom.py`
-2. Sửa ma trận A và vector b
-3. Chạy lại
+Mở file `demo_custom.py`, sửa ma trận A và vector b, rồi chạy lại.
 
-**Ví dụ:** Giải hệ phương trình:
-```
-x + y = 1
-x + 2y = 2
-x + 3y = 2
+### 3️⃣ Chạy Tất Cả Demo Mẫu
+
+```bash
+python3 QR.py
 ```
 
-Trong file `demo_custom.py`:
-```python
-A = np.array([
-    [1, 1],      # x + y
-    [1, 2],      # x + 2y
-    [1, 3]       # x + 3y
-], dtype=float)
+Chạy tất cả ví dụ từ báo cáo và demo mẫu.
 
-b = np.array([1, 2, 2], dtype=float)
-```
+### 4️⃣ Sử Dụng Trong Code Python
 
-### Cách 3: Sử dụng trong code Python khác
 ```python
 import numpy as np
 from QR import solve_system
 
 # Định nghĩa hệ phương trình
-A = np.array([
-    [1, 2],
-    [3, 4],
-    [5, 6]
-], dtype=float)
-
-b = np.array([7, 8, 9], dtype=float)
+A = np.array([[1, 1], [1, 2], [1, 3]], dtype=float)
+b = np.array([1, 2, 2], dtype=float)
 
 # Giải và hiển thị kết quả
 solve_system(A, b)
 ```
 
-### Cách 4: Sử dụng từng phương pháp riêng lẻ
-```python
-import numpy as np
-from QR import LeastSquaresSolver
+## 🎯 Các Phương Pháp
 
-A = np.array([[1, 1], [1, 2], [1, 3]], dtype=float)
-b = np.array([1, 2, 2], dtype=float)
+Chương trình hỗ trợ 4 phương pháp phân rã QR:
 
-# Giải bằng Householder
-result = LeastSquaresSolver.solve_qr(A, b, method='householder')
+| Phương pháp | Tốc độ | Độ ổn định | Khuyến nghị |
+|-------------|--------|------------|-------------|
+| **CGS** (Classical Gram-Schmidt) | ⚡⚡⚡ Nhanh nhất | ⭐⭐ | Ma trận tốt |
+| **MGS** (Modified Gram-Schmidt) | ⚡⚡ Nhanh | ⭐⭐⭐ | Cân bằng |
+| **Householder** | ⚡ Trung bình | ⭐⭐⭐⭐ | **Tốt nhất** |
+| **Givens** | ⚡ Trung bình | ⭐⭐⭐ | Ma trận thưa |
 
-print(f"Nghiệm: {result['x']}")
-print(f"Ma trận Q:\n{result['Q']}")
-print(f"Ma trận R:\n{result['R']}")
-print(f"Thời gian: {result['time']*1000:.4f} ms")
-```
-
-## 📊 Kết quả hiển thị
+## 📊 Kết Quả Hiển Thị
 
 Khi chạy `solve_system()`, chương trình sẽ hiển thị:
 
-### 1. Dữ liệu đầu vào
-- Ma trận A
-- Vector b
-- Số điều kiện κ(A)
+- ✅ **Ma trận Q** (ma trận trực giao)
+- ✅ **Ma trận R** (ma trận tam giác trên)
+- ✅ **Nghiệm x**
+- ✅ **Độ chính xác**: ||Ax - b|| và ||Q^T Q - I||
+- ✅ **Thời gian thực thi** (ms)
+- ✅ **Bảng so sánh thời gian** giữa 4 phương pháp
+- ✅ **Bảng so sánh độ chính xác**
+- ✅ **So sánh với NumPy**
 
-### 2. Kết quả từng phương pháp
-- **Ma trận Q** (ma trận trực giao)
-- **Ma trận R** (ma trận tam giác trên)
-- **Nghiệm x**
-- **Độ chính xác**: ||Ax - b|| và ||Q^T Q - I||
-- **Thời gian thực thi** (ms)
-
-### 3. Bảng so sánh
-- **So sánh thời gian** giữa 4 phương pháp
-- **So sánh độ chính xác**
-- **Kiểm tra tính nhất quán** của nghiệm
-- **So sánh với NumPy**
-
-## 🎯 Các phương pháp
-
-| Phương pháp | Ưu điểm | Nhược điểm |
-|-------------|---------|------------|
-| **CGS** | Nhanh nhất | Kém ổn định số |
-| **MGS** | Cân bằng tốc độ & ổn định | - |
-| **Householder** | Ổn định nhất (khuyến nghị) | Chậm hơn một chút |
-| **Givens** | Tốt cho ma trận thưa | Chậm với ma trận dày |
-
-## 📁 Cấu trúc file
+## 📁 Cấu Trúc Thư Mục
 
 ```
-TTKH/
-├── QR.py              # Code chính với tất cả các thuật toán
-├── demo_custom.py     # Demo đơn giản để người dùng tùy chỉnh
-├── README.md          # File hướng dẫn này
-└── BÁO CÁO TTKH.pdf   # Báo cáo
+├── QR.py                   # Code chính với tất cả thuật toán
+├── demo_interactive.py     # Demo tương tác - Nhập từ bàn phím
+├── demo_custom.py          # Demo đơn giản - Sửa code
+├── README.md               # File này
+└── BÁO CÁO TTKH.pdf        # Báo cáo
 ```
 
-## 💡 Ví dụ nhanh
+## 💡 Ví Dụ Nhanh
 
 ### Ví dụ 1: Hệ 3 phương trình, 2 ẩn
 ```python
@@ -155,39 +119,29 @@ solve_system(A, b)
 # Nghiệm: x = [1.07, 1.09, 1.54]
 ```
 
-## ⚡ So sánh hiệu năng
+## 🎓 Tính Năng
 
-Thời gian thực thi trung bình (ma trận 3×2):
-- CGS: ~0.05 ms ⚡ (Nhanh nhất)
-- MGS: ~0.06 ms
-- Givens: ~0.07 ms
-- Householder: ~0.09 ms
-- NumPy: ~0.14 ms
+- ✅ 4 phương pháp phân rã QR: CGS, MGS, Householder, Givens
+- ✅ Giải bài toán bình phương tối thiểu
+- ✅ Hiển thị ma trận Q và R
+- ✅ Đo và so sánh thời gian thực thi
+- ✅ So sánh độ chính xác
+- ✅ Demo tương tác - Nhập từ bàn phím
+- ✅ Kiểm tra tính nhất quán của nghiệm
+- ✅ So sánh với NumPy
 
-**Lưu ý:** Householder tuy chậm hơn nhưng ổn định nhất với ma trận ill-conditioned.
-
-## 🔍 Kiểm tra code
-
-Chạy test để đảm bảo code hoạt động đúng:
-```bash
-python3 QR.py
-```
-
-Kết quả mong đợi:
-- ✅ Tất cả phương pháp cho nghiệm giống nhau
-- ✅ Sai số ||Q^T Q - I|| < 10^-15
-- ✅ Nghiệm khớp với NumPy
-- ✅ Không có lỗi
-
-## 📞 Hỗ trợ
-
-Nếu gặp lỗi:
-1. Kiểm tra NumPy đã cài đặt: `pip3 install numpy`
-2. Kiểm tra Python version >= 3.6
-3. Đảm bảo ma trận A có dtype=float
-
-## 📝 Ghi chú
+## 📝 Ghi Chú
 
 - Ma trận A có thể có nhiều hàng hơn cột (m > n) - Bài toán bình phương tối thiểu
 - Nếu m = n và A khả nghịch, nghiệm là nghiệm chính xác
 - Nếu m > n, nghiệm là nghiệm tối ưu theo nghĩa bình phương tối thiểu
+- Householder là phương pháp ổn định nhất, khuyến nghị cho ma trận ill-conditioned
+
+## 📞 Liên Hệ
+
+- GitHub: https://github.com/vutrantuanminh/QR-Decomposition
+- Tác giả: Vũ Trần Tuấn Minh
+
+---
+
+**Chúc bạn sử dụng thành công! 🎉**
