@@ -191,7 +191,7 @@ class LeastSquaresSolver:
         Returns:
             Dict chứa nghiệm và các thông tin khác
         """
-        start_time = time.time()
+        start_time = time.perf_counter()
         
         # Chọn phương pháp phân rã QR
         qr_methods = {
@@ -220,7 +220,7 @@ class LeastSquaresSolver:
         # Kiểm tra độ trực giao của Q
         orthogonality_error = np.linalg.norm(Q.T @ Q - np.eye(Q.shape[1]))
         
-        elapsed_time = time.time() - start_time
+        elapsed_time = time.perf_counter() - start_time
         
         return {
             'x': x,
@@ -246,7 +246,7 @@ class LeastSquaresSolver:
         Returns:
             Dict chứa nghiệm và các thông tin khác
         """
-        start_time = time.time()
+        start_time = time.perf_counter()
         
         # Tính A^T A và A^T b
         ATA = A.T @ A
@@ -263,7 +263,7 @@ class LeastSquaresSolver:
         cond_A = np.linalg.cond(A)
         cond_ATA = np.linalg.cond(ATA)
         
-        elapsed_time = time.time() - start_time
+        elapsed_time = time.perf_counter() - start_time
         
         return {
             'x': x,
@@ -457,9 +457,20 @@ def solve_system(A: np.ndarray, b: np.ndarray):
     # Tìm phương pháp nhanh nhất
     min_time = min(r['time'] for r in results.values())
     
+    # Kiểm tra nếu thời gian quá nhỏ (có thể bằng 0 do làm tròn)
+    if min_time < 1e-9:  # Nhỏ hơn 1 nanosecond
+        print("\n⚠️  Cảnh báo: Thời gian đo quá nhỏ, kết quả có thể không chính xác.")
+        print("   Khuyến nghị: Sử dụng ma trận lớn hơn để đo thời gian chính xác hơn.\n")
+    
     for method in methods:
         time_ms = results[method]['time'] * 1000
-        relative_speed = results[method]['time'] / min_time
+        
+        # Xử lý trường hợp min_time = 0 hoặc quá nhỏ
+        if min_time > 0:
+            relative_speed = results[method]['time'] / min_time
+        else:
+            relative_speed = 1.0  # Nếu tất cả đều = 0, coi như bằng nhau
+        
         fastest = " ⚡ (Nhanh nhất)" if results[method]['time'] == min_time else ""
         print(f"{method.upper():<20} {time_ms:<20.4f} {relative_speed:<20.2f}x{fastest}")
     
@@ -494,9 +505,9 @@ def solve_system(A: np.ndarray, b: np.ndarray):
     print("🔬 SO SÁNH VỚI NUMPY.LINALG.LSTSQ")
     print("="*80)
     
-    start_time = time.time()
+    start_time = time.perf_counter()
     x_numpy = np.linalg.lstsq(A, b, rcond=None)[0]
-    numpy_time = time.time() - start_time
+    numpy_time = time.perf_counter() - start_time
     
     print(f"Nghiệm NumPy: {x_numpy}")
     print(f"Thời gian: {numpy_time*1000:.4f} ms")
